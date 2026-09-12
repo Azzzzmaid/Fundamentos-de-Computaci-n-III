@@ -7,8 +7,11 @@ package rover;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.Queue;
+import java.util.LinkedList;
 
 public class Rover {
 
@@ -17,6 +20,38 @@ public class Rover {
         ArrayList<String> lineas = leerArchivo(cadena);
         Queue<String> queue =addToQueue(lineas);
         travelQueue(queue);
+        queue=addToQueue(lineas);
+        Deque<String> stack= queueToStack(queue);
+        queue = stackToQueue(stack);
+        travelQueue(queue);
+        
+        
+        
+        
+    }
+    
+    public static Queue<String> stackToQueue(Deque<String> stack){
+        Queue<String> queue = new LinkedList<>();
+        
+        while (!stack.isEmpty()) {
+            String linea= stack.pop();
+            if (linea !=null) {
+                queue.add(linea);
+            }
+        }
+        return queue;
+        
+    } 
+    
+    public static Deque<String> queueToStack(Queue<String> queue){
+        Deque<String> deque = new ArrayDeque<>();
+        while (!queue.isEmpty()){
+            String linea =queue.poll();
+            if (linea != null)
+                deque.push(linea);
+        }
+        return deque;
+            
     }
     
     public static Queue<String> addToQueue (ArrayList<String> lineas){

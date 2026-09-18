@@ -100,10 +100,41 @@ public class TanoiS_Tower {
     private static void jugarManual() {
         inicializaTorres();
        
-        while (true) {            
+        while (torres[2].size()<numeroDeDiscos) {            
             despliegaTorres();
-            System.out.println("Ingrese ka tirre de origen (A, B, C) ó ");
+            String origen = eligeTorre("Ingrese la torre de origen (A, B, C)");
+            String destino = eligeTorre("Elige la torre de destino (A, B, C)");
+            int torreOrigen = origen.charAt(0) - 'A';
+            int torreDestino = destino.charAt(0) - 'A';
+            if (torres[torreOrigen].isEmpty()) {
+                System.out.println("La Torre de origen está vacia. Intenta de nuevo");
+                continue;
+            }
+            if (torreOrigen == torreDestino) {
+                System.out.println("La torre de origen y de destino son las mismas. Intente de nuevo");
+                continue;
+            }
+            moverDisco(torreOrigen, torreDestino);
         }
+        System.out.println("\n\n");
+        System.out.println("Ganaste El juego!!");
+    }
+    
+    public static boolean moverDisco (int origen, int destino){
+        if (torres[origen].isEmpty()) {
+            System.out.println("No hay discos en la torre de origen");
+            return false;
+        }
+        if (!torres[destino].isEmpty() && torres[origen].peek() > torres[destino].peek()) {
+            System.out.println("Movimeinto invalido. No puedes colocar un disco"
+                    + " más grande sobre uno más pequeño");
+            return false;
+        }
+        int disco = torres[origen].pop();
+        torres[destino].push(disco);
+        System.out.println("Moviste el disco "+ disco + " de la torre "+ (char)('A'+ origen)+
+                " a la torre "+ (char)('A'+destino)+".");
+        return true;
     }
     
     public static String eligeTorre (String mensaje){

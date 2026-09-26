@@ -150,9 +150,29 @@ public class TanoiS_Tower {
     }
 
     private static void mostrarSolucion() {
-       
+        if (numeroDeDiscos > 8 || numeroDeDiscos <3) {
+            System.out.println("Primero debe de ingresar un número de discos válido");
+            return;
+        }
+        System.out.println("---Solución automática de una torre de "+ numeroDeDiscos + " discos---");
+        inicializaTorres();
+        despliegaTorres();
+        
+        resolverHanoi(numeroDeDiscos, 0, 2, 1);
     }
     
-    
+    private static void resolverHanoi(int numeroDiscos, int origen, int destino, int auxiliar){
+        if (numeroDiscos == 1) {
+            moverDisco(origen, destino);
+            despliegaTorres();
+            return;
+        }
+        
+        resolverHanoi(numeroDiscos-1, origen, auxiliar, destino);
+        
+        moverDisco(origen, destino);
+        
+        resolverHanoi(numeroDiscos-1, auxiliar, destino, origen);
+    }
     
 }

@@ -76,8 +76,16 @@ public class ExpedientesPersonas {
               personaEncontrada.mostrarDatos();
         }
         
-        buscarVariasPersonasEnLista(personas, new String[]{"Alan Aldama Andre", "Isabel Domíngues Ochoa",
+//        buscarVariasPersonasEnLista(personas, new String[]{"Alan Aldama Andre", "Isabel Domíngues Ochoa",
+//        "Ernesto Ozuna Ramirez", "Ada Pino López", "Bruno Díaz Henández", "Luis Caro Durazo"});
+        
+        java.util.HashMap<String, Personas> mapaPersonas = new java.util.HashMap<>();
+        for (Personas persona : personas) {
+            mapaPersonas.put(persona.getNombre(), persona);
+        }
+        buscarVariasPersonasEnHashMap(mapaPersonas, new String[]{"Alan Aldama Andre", "Isabel Domíngues Ochoa",
         "Ernesto Ozuna Ramirez", "Ada Pino López", "Bruno Díaz Henández", "Luis Caro Durazo"});
+
     }
     
     public static Personas buscarPersonaEnLista(ArrayList<Personas> personas, String nombre) {
@@ -104,6 +112,24 @@ public class ExpedientesPersonas {
         long endTime = System.nanoTime();
         System.out.println("Tiempo de búsqueda: " + (endTime - startTime) / 1000000.0 + " ms");
     }
+    
+    public static Personas buscarPersonasHashMap(java.util.HashMap<String, Personas> mapaPersonas, String nombre){
+        return mapaPersonas.get(nombre);
+    }   
+    
+    public static void buscarVariasPersonasEnHashMap (java.util.HashMap<String, Personas> mapaPersonas, String[] nombres){
+        long startTime= System.nanoTime();
+        for (String nombre : nombres) {
+            Personas personaEncontrada = buscarPersonasHashMap(mapaPersonas, nombre);
+            if (personaEncontrada !=null ) {
+                personaEncontrada.mostrarDatos();
+            }else{
+                System.out.println("No se encontró a la persona con nombre: "+nombre);
+            }
+        }
+        long endtime = System.nanoTime();
+        System.out.println("Tiempo de busqueda en hashmap: "+ (endtime- startTime)/1000000.0 +" ms");
+    }
 
     
-}//Close class ExpedientesPersonas
+}//Close class ExpedisonasentesPersonas

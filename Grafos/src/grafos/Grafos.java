@@ -75,21 +75,23 @@ class GrafoArrays{
         String[] lineas = origen.split("\\R");
         int peso=0;
         for (String linea : lineas) {
+            peso=0;
             String arista = linea.trim();
             if (arista.startsWith("graph") || arista.isEmpty()) {continue; }
             if (arista.startsWith("{")) {
                 arista=arista.substring(1).trim();
             }
-            int etiqueta = arista.indexOf('[');
-            if (etiqueta>=0) {
-                arista= arista.substring(0,etiqueta);
-            }
-            peso = 1;
             int primeracomilla = arista.indexOf("\"");
             int segundacomilla = arista.indexOf("\"", primeracomilla+1);
             if (primeracomilla>=0 && segundacomilla>primeracomilla) {
                 String valorPeso = arista.substring(primeracomilla+1, segundacomilla);
                 peso = Integer.parseInt(valorPeso);
+            int etiqueta = arista.indexOf('[');
+            if (etiqueta>=0) {
+                arista= arista.substring(0,etiqueta);
+            }
+            
+            
             }
             String[] extremos = arista.split("--", 2);
             if (extremos.length ==2) {
@@ -100,12 +102,18 @@ class GrafoArrays{
     //crear metodo para desplegar
     
     public void desplegarMatriz(){
-        System.out.println("=========MATRIZ DE ADYACENCIA=============");
+        System.out.println("================MATRIZ DE ADYACENCIA=====================");
         for (int i = 0; i < numVertices; i++) {
+            System.out.print(vertices[i].substring(0, 3)+" ");
             for (int j = 0; j < numVertices; j++) {
-                System.out.printf("[%d]", matrizAdyacencia[i][j]);
+                System.out.printf("%d   ", matrizAdyacencia[i][j]);
             }
             System.out.println();
+        }
+        System.out.print("   ");
+        for (int i = 0; i < numVertices; i++) {
+            System.out.print(vertices[i].substring(0, 3)+" ");
+            
         }
     }
     //populate matrizAdyacencia(origen)

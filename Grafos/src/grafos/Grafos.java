@@ -1,9 +1,14 @@
 package grafos;
+import java.util.ArrayList;
 
 class GrafoArrays{
     private String[] vertices;
     private int numVertices;
     private int[][] matrizAdyacencia;
+    
+    private ArrayList<String> arcosDFS;
+       private ArrayList<String> arcosBFS;
+
     
     public GrafoArrays(String origen){
         creaTablaVertices(origen);
@@ -71,30 +76,28 @@ class GrafoArrays{
     }
     
     //Crear metodo de crear repetir un poco del codigo de creaTablaVertices
-    public void crearMatriz(String origen){
+    public void populateMatriz(String origen){
         String[] lineas = origen.split("\\R");
-        int peso=0;
+        int peso = 0;
         for (String linea : lineas) {
-            peso=0;
+            peso = 0;
             String arista = linea.trim();
-            if (arista.startsWith("graph") || arista.isEmpty()) {continue; }
+            if (arista.startsWith("graph") || arista.isEmpty()) { continue; }
             if (arista.startsWith("{")) {
-                arista=arista.substring(1).trim();
+                arista = arista.substring(1).trim();
             }
             int primeracomilla = arista.indexOf("\"");
             int segundacomilla = arista.indexOf("\"", primeracomilla+1);
             if (primeracomilla>=0 && segundacomilla>primeracomilla) {
                 String valorPeso = arista.substring(primeracomilla+1, segundacomilla);
                 peso = Integer.parseInt(valorPeso);
-            int etiqueta = arista.indexOf('[');
-            if (etiqueta>=0) {
-                arista= arista.substring(0,etiqueta);
             }
-            
-            
+            int etiqueta = arista.indexOf('[');
+            if (etiqueta >= 0) {
+                arista = arista.substring(0, etiqueta);
             }
             String[] extremos = arista.split("--", 2);
-            if (extremos.length ==2) {
+            if (extremos.length == 2) {
                 agregarArista(extremos[0].trim(), extremos[1].trim(), peso);
             }
         }
@@ -117,8 +120,106 @@ class GrafoArrays{
         }
     }
     //populate matrizAdyacencia(origen)
+    
+    public void DFS(String verticeInicial, String verticeFinal){
+        arcosDFS = new ArrayList<>();
+        boolean[] visitado= new boolean[numVertices];
+        int[] origenPadre= new int[numVertices];
+        for (int i =0; i<numVertices; i++) origenPadre[i]=-1;
+        int indiceInicial= obtenerIndiceVertice(verticeInicial);
+        int indiceFinal= obtenerIndiceVertice(verticeFinal);
+        if (indiceInicial==-1 || indiceFinal==-1) {
+            System.out.println("Uno o ambos de los vertices no existen en este árbol");
+            return;
+        }
+        System.out.println("Recorrido DFS de "+ verticeInicial + " hasta "+verticeFinal);
+        java.util.Stack<Integer> stack = new java.util.Stack<>();
+        stack.push(indiceInicial);
+        while(!stack.isEmpty()){
+            int indiceActual = stack.pop();
+            if (!visitado[indiceActual]) {
+                visitado[indiceActual] = true;
+                if (origenPadre[indiceActual] != -1) {
+                    arcosDFS.add(vertices[origenPadre[indiceActual]]+ " -- " + vertices[indiceActual]);
+                }
+                if (indiceActual == indiceFinal) {
+                    System.out.println("Ya llegamos\n");
+                    return;
+                }
+                for (int i = 0; i < numVertices; i++) {
+                    if (matrizAdyacencia[indiceActual][i] !=0 && !visitado[i]) {
+                        origenPadre[i] = indiceActual;
+                        stack.push(i);
+                    }
+                }
+            }   
+        }
+    }
+    
+    
+    public void BFS (String verticeInicial, String verticeFinal){
+        arcosBFS= new ArrayList<>();
+        boolean[] visitado= new boolean[numVertices];
+        int[] origenPadre= new int [numVertices];
+        for (int i = 0; i<numVertices; i++) origenPadre[i] = -1;
+        int indiceInicial= obtenerIndiceVertice(verticeInicial);
+        int indiceFinal= obtenerIndiceVertice(verticeFinal);
+        if (indiceInicial==-1 || indiceFinal==-1) {
+           System.out.println("Uno o ambos de los vertices no existen en este árbol");
+            return;
+        }
+        System.out.println("Recorrido BFS de "+ verticeInicial + " hasta "+verticeFinal);
+        java.util.Queue<Integer> queue = new java.util.LinkedList<>();
+        queue.add(indiceInicial);
+        visitado[indiceInicial]= true;
+        while(!queue.isEmpty()){
+            int indiceActual = queue.poll();
+            if (origenPadre[indiceActual] !=-1){
+                arcosBFS.add(vertices[origenPadre[indiceActual]] + " -- " + vertices[indiceActual]);
+            }
+            
+            if (indiceActual == indiceFinal) {
+                System.out.println("Ya llegamos\n");
+                return;
+            }
+            for (int i = 0; i < numVertices; i++) {
+                if (matrizAdyacencia[indiceActual][i] !=0 && !visitado[i]) {
+                    visitado[i]=true;
+                    origenPadre[i] = indiceActual;
+                    queue.add(i);                
+                }
+            }
+        }
+    }
+    
+    public void despliegaArcos(){
+        System.out.println("Despliegue de Arcos: ");
+        System.out.println("Arcos recorridos en DFS: " + (arcosDFS != null ? arcosDFS : "No ejecutado"));
+        System.out.println("Arcos recorridos en BFS: " + (arcosBFS != null ? arcosBFS : "No ejecutado"));
+        int totalArcosGrado=0;
+        for (int i=0; i<numVertices;i++){
+            for(int j=i; j<numVertices;j++){
+                if (matrizAdyacencia[i][j] != 0) {
+                    totalArcosGrado++;
+                }
+            }
+        }
+        System.out.println("Resumen de estadisticas:");
+        System.out.println("Número de vértices en total: "+ numVertices);
+        System.out.println("Número total de arcos en el grafo: " + totalArcosGrado);
+        if (arcosDFS != null && arcosBFS != null) {
+            System.out.println("\n--- Comparación ---");
+            if (arcosDFS.size() < arcosBFS.size()) {
+                System.out.println("DFS ocupó menos arcos (" + arcosDFS.size() + " vs " + arcosBFS.size() + ")");
+            } else if (arcosBFS.size() < arcosDFS.size()) {
+                System.out.println("BFS ocupó menos arcos (" + arcosBFS.size() + " vs " + arcosDFS.size() + ")");
+            } else {
+                System.out.println("Ambos métodos ocuparon el mismo número de arcos (" + arcosDFS.size() + ")");
+            }
+        }
+    }
 }
-
+//guardar los nodos visitados para poder ver que metodo de busqueda conviene mas
 public class Grafos {
 
     public static void main(String[] args) {
@@ -128,8 +229,12 @@ public class Grafos {
         GrafoArrays grafo =new GrafoArrays(texto);
         grafo.display();
         System.out.println();
-        grafo.crearMatriz(texto);
+        grafo.populateMatriz(texto);
         grafo.desplegarMatriz();
+        System.out.println("\n");
+        grafo.DFS("Arcangel", "Lucia");
+        grafo.BFS("Arcangel", "Lucia");
+        grafo.despliegaArcos();
     }
     
     public static String cargaArchivo(String ruta){

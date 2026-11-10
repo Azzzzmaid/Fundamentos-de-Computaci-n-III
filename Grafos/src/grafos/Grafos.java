@@ -218,12 +218,62 @@ class GrafoArrays{
             }
         }
     }
+    
+    public String caminoCorto (String verticeInicial, String verticeFinal){
+        int inicio= obtenerIndiceVertice(verticeInicial);
+        int destino = obtenerIndiceVertice(verticeFinal);
+        if (inicio==-1 || destino == -1) {
+            return "Uno o ambos vertices no existen en el grafo";
+        }
+        int[] distancia= new int[numVertices];
+        int[] anterior= new int[numVertices];
+        boolean[] visitado = new boolean[numVertices];
+        java.util.Arrays.fill(distancia, Integer.MAX_VALUE);
+        java.util.Arrays.fill(anterior, -1);
+        distancia[inicio] = 0;
+        for (int paso= 0; paso<numVertices; paso++){
+            int actual = -1;
+            //Seleccionamos le vertice no visitado con la distancia más corta
+            for (int i = 0; i < numVertices; i++) {
+                if (!visitado[i] && distancia[i] != Integer.MAX_VALUE
+                        && (actual ==-1 || distancia[i] < distancia[actual])) {
+                    actual=i;
+                }
+            }
+            if (actual==-1) {
+                break; //los vertices son inalcnzables
+            }
+            if (actual== destino) {
+                break; //la distancia al destino ya es definitiva
+            }
+            visitado[actual] = true;
+            for (int vecino = 0; vecino < numVertices; vecino++) {
+                int peso = matrizAdyacencia[actual][vecino];
+                if (peso>0 && !visitado[vecino] && distancia[actual]<= Integer.MAX_VALUE - peso) {
+                    int nuevaDistancia = distancia[actual]+peso;
+                    if (nuevaDistancia<distancia[vecino]) {
+                        distancia[vecino] = nuevaDistancia;
+                        anterior[vecino] = actual;
+                    }
+                }
+            }
+        }
+        if (distancia[destino] == Integer.MAX_VALUE) {
+            return "No existe un camino entre " + verticeInicial +" y " + verticeFinal;
+        }
+        java.util.ArrayList<String> camino = new ArrayList<>();
+        int actual = destino;
+        while (actual!=-1) {            
+            camino.add(0, vertices[actual]);
+            actual= anterior[actual];
+        }
+        return "El camino más corto de " + verticeInicial + " a " + verticeFinal + " es: " + String.join(" -> ", camino);    }
 }
 //guardar los nodos visitados para poder ver que metodo de busqueda conviene mas
 public class Grafos {
 
     public static void main(String[] args) {
-        String texto = cargaArchivo("grafo_salon.txt");
+        String texto = cargaArchivo("grafo_salon2.txt");
         System.out.println("Contenido del archivo:\n\n"+ texto);
         
         GrafoArrays grafo =new GrafoArrays(texto);
@@ -231,10 +281,12 @@ public class Grafos {
         System.out.println();
         grafo.populateMatriz(texto);
         grafo.desplegarMatriz();
-        System.out.println("\n");
-        grafo.DFS("Arcangel", "Lucia");
-        grafo.BFS("Arcangel", "Lucia");
-        grafo.despliegaArcos();
+//        System.out.println("\n");
+//        grafo.DFS("Angel", "Yael");
+//        grafo.BFS("Angel", "Yael");
+//        grafo.despliegaArcos();
+        String caminoDijkstra = grafo.caminoCorto("Yael", "Zahid");
+        System.out.println("\n\n"+caminoDijkstra);
     }
     
     public static String cargaArchivo(String ruta){

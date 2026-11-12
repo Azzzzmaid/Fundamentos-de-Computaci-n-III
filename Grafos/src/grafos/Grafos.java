@@ -273,20 +273,22 @@ class GrafoArrays{
 public class Grafos {
 
     public static void main(String[] args) {
-        String texto = cargaArchivo("grafo_salon2.txt");
-        System.out.println("Contenido del archivo:\n\n"+ texto);
-        
-        GrafoArrays grafo =new GrafoArrays(texto);
-        grafo.display();
-        System.out.println();
-        grafo.populateMatriz(texto);
-        grafo.desplegarMatriz();
-//        System.out.println("\n");
-//        grafo.DFS("Angel", "Yael");
-//        grafo.BFS("Angel", "Yael");
-//        grafo.despliegaArcos();
-        String caminoDijkstra = grafo.caminoCorto("Yael", "Zahid");
-        System.out.println("\n\n"+caminoDijkstra);
+        String texto = cargaArchivo("grafo_salon.txt");
+//        System.out.println("Contenido del archivo:\n\n"+ texto);
+//        
+//        GrafoArrays grafo =new GrafoArrays(texto);
+//        grafo.display();
+//        System.out.println();
+//        grafo.populateMatriz(texto);
+//        grafo.desplegarMatriz();
+////        System.out.println("\n");
+////        grafo.DFS("Angel", "Yael");
+////        grafo.BFS("Angel", "Yael");
+////        grafo.despliegaArcos();
+//        String caminoDijkstra = grafo.caminoCorto("Yael", "Zahid");
+//        System.out.println("\n\n"+caminoDijkstra);
+        GrafoListas grafoListas = new GrafoListas(texto);
+        grafoListas.display();
     }
     
     public static String cargaArchivo(String ruta){

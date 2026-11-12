@@ -4,14 +4,14 @@ public class Nodos {
     String nombre;
     ArrayList<Nodos> adyacentes;
     int peso;
-    public Nodos (String nombre, int peso){
+    public Nodos (String nombre){
         this.nombre = nombre;
-        this.peso=peso;
+        this.peso=0;
         this.adyacentes= new ArrayList<>();
     }
-    public void agregarAdyacentes(Nodos nodo, int peso){
+    public void agregarAdyacente(Nodos nodo, int peso) {
         adyacentes.add(nodo);
-        nodo.peso=peso;
+        nodo.peso = peso;
     }
     public void display(){
         System.out.println(nombre);
@@ -20,5 +20,14 @@ public class Nodos {
             System.out.println(nodo.nombre + ": "+ nodo.peso + " ");
         }
         System.out.println();
+    }
+    public String getNombre() {
+        return nombre;
+    }
+    public ArrayList<Nodos> getAdyacentes() {
+        return adyacentes;
+    }
+    public int getPeso() {
+        return peso;
     }
 }
